@@ -3,8 +3,8 @@ name: Deploy to Treasure Data
 on:
   workflow_dispatch:
     inputs:
-      region:
-        description: 'Deployment (Prod or Dev)'
+      instance:
+        description: 'Instance (Prod or Dev)'
         required: true
         default: 'Dev'  # Default can be set to 'EU' or 'US'
 
