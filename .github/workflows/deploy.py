@@ -8,8 +8,12 @@ def get_api_keys(instance_type: str) -> str:
     Args: instance_type (str): The instance type, either 'dev' or 'prod', used to retrieve the appropriate API keys.
     Returns: Tuple[str, str]: A tuple containing the API keys for the EU and US regions, respectively.
     """
-    api_key_eu = os.environ[f"TD_API_KEY_EU_{instance_type.upper()}"]
-    api_key_us = os.environ[f"TD_API_KEY_US_{instance_type.upper()}"]
+    api_key_eu = os.environ.get(f"TD_API_KEY_EU_{instance_type.upper()}")
+    api_key_us = os.environ.get(f"TD_API_KEY_US_{instance_type.upper()}")
+    if api_key_eu is None or api_key_us is None:
+        raise ValueError(
+            f"API keys for {instance_type} are missing or entered incorrectly."
+        )
     return api_key_eu, api_key_us
 
 
@@ -18,8 +22,13 @@ def get_project_paths():
     Generates and returns the file paths for the project directories corresponding to the EU and US regions.
     Returns: Tuple[str, str]: A tuple containing the paths to the EU and US project directories.
     """
+
     project_path_eu = os.path.join(os.getcwd(), "eu")
     project_path_us = os.path.join(os.getcwd(), "us")
+    if not os.path.exists(project_path_eu) or not os.path.exists(project_path_us):
+        raise FileNotFoundError(
+            "One or both of the folders do not exist. Please enter a correct project path"
+        )
     return project_path_eu, project_path_us
 
 
@@ -42,9 +51,12 @@ def deploy_td_project(project_folder, api_key, endpoint):
         endpoint (str): The API endpoint for the region where the project is being deployed.
     Returns: None
     """
-    client = tdworkflow.client.Client(api_key=api_key, endpoint=endpoint)
-    os.chdir(project_folder)
-    client.create_project(project_folder, ".")
+    try:
+        client = tdworkflow.client.Client(api_key=api_key, endpoint=endpoint)
+        os.chdir(project_folder)
+        client.create_project(project_folder, ".")
+    except Exception as e:
+        raise RuntimeError(f"Failed to deploy project at {project_folder}: {str(e)}")
 
 
 def main():
