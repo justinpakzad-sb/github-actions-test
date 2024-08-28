@@ -2,7 +2,7 @@ import os
 import tdworkflow
 
 
-def get_api_keys(instance_type: str) -> str:
+def get_api_keys(instance_type: str) -> tuple[str, str]:
     """
     Retrieves the API keys for the specified instance type (dev/prod) for both EU and US regions.
     Args: instance_type (str): The instance type, either 'dev' or 'prod', used to retrieve the appropriate API keys.
@@ -17,7 +17,7 @@ def get_api_keys(instance_type: str) -> str:
     return api_key_eu, api_key_us
 
 
-def get_project_paths():
+def get_project_paths() -> tuple[str, str]:
     """
     Generates and returns the file paths for the project directories corresponding to the EU and US regions.
     Returns: Tuple[str, str]: A tuple containing the paths to the EU and US project directories.
@@ -32,7 +32,7 @@ def get_project_paths():
     return project_path_eu, project_path_us
 
 
-def get_endpoints():
+def get_endpoints() -> tuple[str, str]:
     """
     Gets the API endpoints for the Treasure Data console for both the EU and US regions.
     Returns: Tuple[str, str]: A tuple containing the API endpoints for the US and EU regions, respectively.
@@ -42,7 +42,7 @@ def get_endpoints():
     return us_endpoint, eu_endpoint
 
 
-def deploy_td_project(project_folder, api_key, endpoint):
+def deploy_td_project(project_folder: str, api_key: str, endpoint: str) -> None:
     """
     Deploys a Treasure Data project to the specified region using the TD Workflow API client.
     Args:
