@@ -1,0 +1,39 @@
+name: Deploy to Treasure Data
+
+on:
+  workflow_dispatch:
+    inputs:
+      region:
+        description: 'Deployment Region (EU or US)'
+        required: true
+        default: 'EU'  # Default can be set to 'EU' or 'US'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ['3.11']
+    env:
+      TD_WORKFLOW_ENDPOINT: ${{ secrets['SYSTEM_TD_WORKFLOW_ENDPOINT_${{ github.event.inputs.region }}'] }}
+      TD_JOB_ENDPOINT: ${{ secrets['SYSTEM_TD_JOB_ENDPOINT_${{ github.event.inputs.region }}'] }}
+      TD_API_KEY: ${{ secrets['TD_API_KEY_${{ github.event.inputs.region }}'] }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v3
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install dependencies
+        run: |
+          pip install tdworkflow
+          pip install td-client
+
+      - name: Deploy to Treasure Data
+        run: python deploy.py
+        env:
+          REGION: ${{ github.event.inputs.region }}
