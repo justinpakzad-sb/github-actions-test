@@ -4,9 +4,9 @@ on:
   workflow_dispatch:
     inputs:
       instance:
-        description: 'Instance (Prod or Dev)'
+        description: 'Deployment Region (EU or US)'
         required: true
-        default: 'Dev'  # Default can be set to 'EU' or 'US'
+        default: 'EU'  # Default can be set to 'EU' or 'US'
 
 jobs:
   deploy:
